@@ -161,7 +161,8 @@ def get_new_ratings_and_send_email(event, context):
 
   logger.info(f"Found {len(new_ratings)} new ratings")
 
-  interesting_ratings = list(filter(lambda rating:rating['average'] >= MINIMUM_AVERAGE_SCORE, new_ratings))
+  interesting_ratings = list(filter(lambda rating:rating['visible'] == True, new_ratings))
+  interesting_ratings = list(filter(lambda rating:rating['average'] >= MINIMUM_AVERAGE_SCORE, interesting_ratings))
 
   logger.info(f"Found {len(interesting_ratings)} interesting ratings")
   for rating in interesting_ratings:
