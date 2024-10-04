@@ -1,0 +1,11 @@
+# System email gets alarms, system notifications, etc
+# To email gets the email summary of mentions of any of the names of interest in any of the communities of interest. It's also cc'd to the cc email address
+
+subject_line_singular = "You have a new High Five"
+subject_line_plural = "You have {0} new High Fives"
+system_email = "a@b.com"
+to_email = "John Doe <a@b.com>"
+cc_email = "John Doe <a@b.com>"
+from_email = "John Doe <a@b.com>"
+names_of_interest = "[\"First-name\", \"Alternate-first-name\", \"Last-name\"]"
+communities_of_interest = "[\"Community1\", \"Community2\"]"
