@@ -2,7 +2,7 @@
 
 RateMDs.com is a website where patients can leave reviews for physicians. Most reviews are quite nice. 
 
-This system runs daily in AWS Lambda and watches for new ratings above a certain score threshold, and if so sends an email containing those reviewss to the email address provided.
+This system runs daily in AWS Lambda and watches for new ratings above a certain score threshold, and if so sends an email containing those reviews to the email address provided.
 
 ![Example email](https://github.com/euan-forrester/rate-mds-tracker/raw/main/images/example-email.png "Example email")
 
