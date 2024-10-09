@@ -3,7 +3,7 @@
     "metrics": [
         [
             "${metrics_namespace}",
-            "new-high-fives",
+            "num-ratings-filtered-out",
             "Environment",
             "${environment}"
         ]
@@ -11,5 +11,5 @@
     "period":300,
     "stat":"Maximum",
     "region":"${region}",
-    "title":"Number of new High Fives found in the system"
+    "title":"Number of ratings for this user that we filtered out (either not visible or score too low)"
 }

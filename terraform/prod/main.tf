@@ -9,7 +9,7 @@ module "lambda" {
 
   cron_expression         = "cron(0 16 * * ? *)"  # Run every day at 4:00 PM UTC = 9:00 AM PDT or 8:00 AM PST
 
-  set_most_recent_high_five_id = true
+  set_most_recent_rating_id = true
 
   metrics_namespace       = var.application_name
   send_metrics            = true
@@ -20,10 +20,9 @@ module "lambda" {
   to_email                = var.to_email
   cc_email                = var.cc_email
   from_email              = var.from_email
-  names_of_interest       = var.names_of_interest
-  communities_of_interest = var.communities_of_interest
+  minimum_average_score   = var.minimum_average_score
 
-  base_url                = "https://www.fraserhealth.ca//sxa/search/results/?l=en&s={8A83A1F3-652A-4C01-B247-A2849DDE6C73}&sig=&defaultSortOrder=HighFiveDate,Descending&.ZFZ0zOzMLUY=null&v={C0113845-0CB6-40ED-83E4-FF43CF735D67}&o=HighFiveDate,Descending&site=null"
+  base_url                = "https://www.ratemds.com/doctor-ratings/dr-kathryn-louise-toews-new-westminster-bc-ca/?json=true"
 
   batch_size              = 1000
   num_retries             = 3

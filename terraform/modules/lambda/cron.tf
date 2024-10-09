@@ -8,5 +8,5 @@ resource "aws_cloudwatch_event_rule" "cron" {
 resource "aws_cloudwatch_event_target" "cron" {
   rule      = aws_cloudwatch_event_rule.cron.name
   target_id = "TriggerLambda"
-  arn       = aws_lambda_function.high_fives.arn
+  arn       = aws_lambda_function.rate_mds.arn
 }

@@ -7,7 +7,7 @@ variable "region" {
 variable "application_name" {
 }
 
-variable "set_most_recent_high_five_id" {
+variable "set_most_recent_rating_id" {
 }
 
 variable "send_metrics" {
@@ -17,6 +17,9 @@ variable "metrics_namespace" {
 }
 
 variable "send_email" {
+}
+
+variable "minimum_average_score" {
 }
 
 variable "subject_line_singular" {
@@ -32,12 +35,6 @@ variable "cc_email" {
 }
 
 variable "from_email" {
-}
-
-variable "names_of_interest" {
-}
-
-variable "communities_of_interest" {
 }
 
 variable "base_url" {
