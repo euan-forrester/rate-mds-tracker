@@ -15,21 +15,21 @@ resource "aws_cloudwatch_dashboard" "main" {
           "y":0,
           "width":12,
           "height":6,
-          ${local.template_file_most_recent_rating_age_days}
+          ${local.template_file_total_ratings}
        },
        {
           "x":12,
           "y":0,
           "width":12,
           "height":6,
-          ${local.template_file_num_ratings_filtered_out}
+          ${local.template_file_most_recent_rating_age_days}
        },
        {
           "x":0,
           "y":6,
           "width":12,
           "height":6,
-          ${local.template_file_total_ratings}
+          ${local.template_file_num_ratings_filtered_out}
        },
        {
           "x":12,
