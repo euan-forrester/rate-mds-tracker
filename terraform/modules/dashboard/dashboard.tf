@@ -13,34 +13,41 @@ resource "aws_cloudwatch_dashboard" "main" {
        {
           "x":0,
           "y":0,
-          "width":24,
+          "width":12,
           "height":6,
-          ${local.template_file_most_recent_high_five_age_days}
+          ${local.template_file_most_recent_rating_age_days}
+       },
+       {
+          "x":12,
+          "y":0,
+          "width":12,
+          "height":6,
+          ${local.template_file_num_ratings_filtered_out}
        },
        {
           "x":0,
           "y":6,
           "width":12,
           "height":6,
-          ${local.template_file_total_high_fives}
+          ${local.template_file_total_ratings}
        },
        {
           "x":12,
           "y":6,
           "width":12,
           "height":6,
-          ${local.template_file_new_high_fives}
+          ${local.template_file_new_ratings}
        },
        {
           "x":0,
-          "y":6,
+          "y":12,
           "width":12,
           "height":6,
           ${local.template_file_eventbridge_failed_invocations}
        },
        {
           "x":12,
-          "y":6,
+          "y":12,
           "width":12,
           "height":6,
           ${local.template_file_dead_letter_queue_items}
@@ -53,19 +60,25 @@ EOF
 }
 
 locals {
-  template_file_most_recent_high_five_age_days = templatefile("${path.module}/most_recent_high_five_age_days.tftpl", {
+  template_file_most_recent_rating_age_days = templatefile("${path.module}/most_recent_rating_age_days.tftpl", {
     metrics_namespace = var.metrics_namespace
     environment       = var.environment
     region            = var.region   
   })
 
-  template_file_total_high_fives = templatefile("${path.module}/total_high_fives.tftpl", {
+  template_file_num_ratings_filtered_out = templatefile("${path.module}/num_ratings_filtered_out.tftpl", {
+    metrics_namespace = var.metrics_namespace
+    environment       = var.environment
+    region            = var.region   
+  })
+
+  template_file_total_ratings = templatefile("${path.module}/total_ratings.tftpl", {
     metrics_namespace = var.metrics_namespace
     environment       = var.environment
     region            = var.region
   })
 
-  template_file_new_high_fives = templatefile("${path.module}/new_high_fives.tftpl", {
+  template_file_new_ratings = templatefile("${path.module}/new_ratings.tftpl", {
     metrics_namespace = var.metrics_namespace
     environment       = var.environment
     region            = var.region

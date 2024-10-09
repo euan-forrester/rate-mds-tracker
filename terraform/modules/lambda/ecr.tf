@@ -1,9 +1,9 @@
-resource "aws_ecr_repository" "high_fives" {
+resource "aws_ecr_repository" "rate_mds" {
   name = "${var.application_name}-${var.environment}"
 }
 
-resource "aws_ecr_lifecycle_policy" "high_fives" {
-  repository = aws_ecr_repository.high_fives.name
+resource "aws_ecr_lifecycle_policy" "rate_mds" {
+  repository = aws_ecr_repository.rate_mds.name
 
   policy = <<EOF
 {

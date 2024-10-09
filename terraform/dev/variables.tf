@@ -7,7 +7,7 @@ variable "environment" {
 }
 
 variable "application_name" {
-  default = "high-five-tracker"
+  default = "rate-mds-tracker"
 }
 
 variable "system_email" {
@@ -28,8 +28,5 @@ variable "cc_email" {
 variable "from_email" {
 }
 
-variable "names_of_interest" {
-}
-
-variable "communities_of_interest" {
+variable "minimum_average_score" {
 }

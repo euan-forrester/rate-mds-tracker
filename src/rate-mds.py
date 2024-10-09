@@ -112,18 +112,19 @@ def email_ratings(ratings):
 
   subject_line = SUBJECT_LINE_SINGULAR
 
-  if len(high_fives) > 1:
+  if len(ratings) > 1:
     subject_line = SUBJECT_LINE_PLURAL.format(len(ratings))
 
   email_helper.send_email(FROM_EMAIL_ADDRESS, TO_EMAIL_ADDRESS, CC_EMAIL_ADDRESS, subject_line, body_text)
 
-def calculate_metrics(all_ratings, new_ratings):
+def calculate_metrics(all_ratings, new_ratings, num_ratings_filtered_out):
   logger.info("*** Metrics information ***")
   num_ratings_found = len(all_ratings)
   num_new_ratings_found = len(new_ratings)
 
   logger.info(f"Found {num_ratings_found} total ratings")
   logger.info(f"Found {num_new_ratings_found} new ratings")
+  logger.info(f"Filtered out {num_ratings_filtered_out} ratings")
 
   if num_ratings_found == 0:
     logger.info("No ratings found, so no further telemetry can be sent")
@@ -141,6 +142,7 @@ def calculate_metrics(all_ratings, new_ratings):
     metrics_helper.send_count("total-ratings", num_ratings_found)
     metrics_helper.send_count("most-recent-rating-age-days", most_recent_rating_age_days)
     metrics_helper.send_count("new-ratings", num_new_ratings_found)
+    metrics_helper.send_count("num-ratings-filtered-out", num_ratings_filtered_out)
 
 def log_rating(rating):
   rating_components = RateMdsParser.stringify_rating_components(rating)
@@ -151,18 +153,20 @@ def log_rating(rating):
 def get_new_ratings_and_send_email(event, context):
 
   # Need to do this at the start of every request, since Lambda doesn't necessarily re-run the entire script for each invocation
-  PREVIOUS_MOST_RECENT_RATING_ID = config_helper.get("previous-most-recent-rating-id")
+  PREVIOUS_MOST_RECENT_RATING_ID = config_helper.getInt("previous-most-recent-rating-id")
 
   # Request all of the ratings
 
   all_ratings = get_all_ratings()
 
-  new_ratings = list(takewhile(lambda rating:rating['id'] != PREVIOUS_MOST_RECENT_RATING_ID, all_ratings))
+  new_ratings = list(takewhile(lambda rating:rating['id'] > PREVIOUS_MOST_RECENT_RATING_ID, all_ratings))
 
   logger.info(f"Found {len(new_ratings)} new ratings")
 
   interesting_ratings = list(filter(lambda rating:rating['visible'] == True, new_ratings))
   interesting_ratings = list(filter(lambda rating:rating['average'] >= MINIMUM_AVERAGE_SCORE, interesting_ratings))
+
+  num_ratings_filtered_out = len(new_ratings) - len(interesting_ratings)
 
   logger.info(f"Found {len(interesting_ratings)} interesting ratings")
   for rating in interesting_ratings:
@@ -175,7 +179,7 @@ def get_new_ratings_and_send_email(event, context):
     else:
       logger.info("No interesting ratings found, so not sending email")
 
-  calculate_metrics(all_ratings, new_ratings)
+  calculate_metrics(all_ratings, interesting_ratings, num_ratings_filtered_out)
 
   # Be sure to do this last, so that if we have an error earlier (e.g. sending the email) then we won't miss sending out a rating in a subsequent run
   if SET_MOST_RECENT_RATING_ID and (len(all_ratings) > 0):

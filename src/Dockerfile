@@ -12,12 +12,12 @@ RUN  pip3 install -r requirements.txt
 RUN mkdir -p ${LAMBDA_TASK_ROOT}/common
 
 # Copy function code
-COPY high-five.py ${LAMBDA_TASK_ROOT}
-COPY highfiveparser.py ${LAMBDA_TASK_ROOT}
+COPY rate-mds.py ${LAMBDA_TASK_ROOT}
+COPY ratemdsparser.py ${LAMBDA_TASK_ROOT}
 COPY common/confighelper.py ${LAMBDA_TASK_ROOT}/common/
 COPY common/metricshelper.py ${LAMBDA_TASK_ROOT}/common/
 COPY common/emailhelper.py ${LAMBDA_TASK_ROOT}/common/
 
-RUN chmod +x ${LAMBDA_TASK_ROOT}/high-five.py
+RUN chmod +x ${LAMBDA_TASK_ROOT}/rate-mds.py
 
-CMD [ "high-five.get_new_high_fives_and_send_email" ]
+CMD [ "rate-mds.get_new_ratings_and_send_email" ]

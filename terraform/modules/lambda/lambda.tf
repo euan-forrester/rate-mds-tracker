@@ -1,6 +1,6 @@
 # This prevents a circular dependency between aws_lambda_function.high_fives and aws_cloudwatch_log_group.high_five_logs
 variable "lambda_function_name" {
-  default = "email_high_fives"
+  default = "email_ratings"
 }
 
 # Infra to support our lambda function:
@@ -78,14 +78,15 @@ POLICY
 resource "aws_lambda_permission" "allow_cloudwatch_events" {
   statement_id  = "AllowExecutionFromCloudWatchEvents"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.high_fives.function_name
+  function_name = aws_lambda_function.rate_mds.function_name
   principal     = "events.amazonaws.com"
   source_arn    = aws_cloudwatch_event_rule.cron.arn
 }
 
-resource "aws_lambda_function" "high_fives" {
-  image_uri = "${aws_ecr_repository.high_fives.repository_url}:latest"
+resource "aws_lambda_function" "rate_mds" {
+  image_uri = "${aws_ecr_repository.rate_mds.repository_url}:latest"
   architectures = ["x86_64"]
+  #architectures = ["arm64"]
   package_type = "Image"
   function_name = "${var.lambda_function_name}-${var.environment}"
   role = aws_iam_role.iam_for_lambda.arn
@@ -108,8 +109,8 @@ resource "aws_lambda_function" "high_fives" {
 # Infra to respond to our lamdba function:
 # If the invocation fails then the input gets put on a dead-letter queue and an alarm is triggered
 
-resource "aws_lambda_function_event_invoke_config" "high_fives" {
-  function_name = aws_lambda_function.high_fives.function_name
+resource "aws_lambda_function_event_invoke_config" "rate_mds" {
+  function_name = aws_lambda_function.rate_mds.function_name
 
   maximum_event_age_in_seconds = 60
   maximum_retry_attempts       = 2

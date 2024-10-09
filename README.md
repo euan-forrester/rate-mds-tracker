@@ -1,12 +1,10 @@
-# high-five-tracker
+# rate-mds-tracker
 
-Fraser Health has a system where patients can leave nice messages called High Fives thanking staff for the care they received: https://www.fraserhealth.ca/highfive
+RateMDs.com is a website where patients can leave reviews for physicians. Most reviews are quite nice. 
 
-This system is curated and updated periodically by hand. The only issue is that staff members aren't notified when they are the subject of a High Five.
+This system runs daily in AWS Lambda and watches for new ratings above a certain score threshold, and if so sends an email containing those reviewss to the email address provided.
 
-This system runs daily in AWS Lambda and watches for new High Fives and sees if any contain strings matching a list of names provided, and if so sends an email containing those High Fives to the email address provided.
-
-![Example High Five email](https://github.com/euan-forrester/high-five-tracker/raw/main/images/example-email.png "Example High Five email")
+![Example email](https://github.com/euan-forrester/rate-mds-tracker/raw/main/images/example-email.png "Example email")
 
 ### Setup
 
@@ -38,20 +36,21 @@ Install the AWS CLI: https://docs.aws.amazon.com/cli/latest/userguide/install-bu
 
 Note that you need to create & populate `~/.aws/credentials`. There is an example in `terraform/aws_credentials.example`
 
+These instructions are also found on the AWS ECR page, by clicking on the repository and then "View push commands"
+
 Log into your docker repository:
 
 ```
-eval "$(aws ecr get-login --no-include-email --region us-west-2)"
+aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin <aws account id>.dkr.ecr.us-west-2.amazonaws.com
 ```
 
 Then build and push your image:
 
 ```
 cd src
-docker build -f ./Dockerfile .
-docker images
-docker tag <ID of image you just built> <URI of high-five-tracker-[dev|prod] repository in ECR: use AWS console to find>
-docker push <URI of high-five-tracker-[dev|prod] repository in ECR>
+docker build -t rate-mds-tracker-[dev|prod] . --provenance=false
+docker tag rate-mds-tracker-[dev|prod]:latest <aws account id>.dkr.ecr.us-west-2.amazonaws.com/rate-mds-tracker-[dev|prod]:latest
+docker push <aws account id>.dkr.ecr.us-west-2.amazonaws.com/rate-mds-tracker-[dev|prod]:latest
 ```
 
 #### Step 3: Run terraform again
