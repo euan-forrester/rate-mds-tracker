@@ -119,7 +119,7 @@ resource "aws_ssm_parameter" "previous_most_recent_rating_id" {
   name        = "/${var.application_name}/${var.environment}/previous-most-recent-rating-id"
   description = "The ID of the most recent rating ID encountered on the previous run of the lambda expression"
   type        = "String"
-  value       = "dummy"
+  value       = "-1"
 
   lifecycle {
     ignore_changes = [
