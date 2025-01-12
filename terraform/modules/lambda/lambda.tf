@@ -26,10 +26,13 @@ data "aws_caller_identity" "lambda" {
 resource "aws_iam_role" "iam_for_lambda" {
   name               = "${var.application_name}-${var.environment}-iam_for_lambda"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
+}
 
-  inline_policy {
-    name = "email-logs-lambda-policy-${var.environment}"
-    policy = <<POLICY
+resource "aws_iam_role_policy" "iam_for_lambda_policy" {
+  name = "email-logs-lambda-policy-${var.environment}"
+  role = aws_iam_role.iam_for_lambda.id
+
+  policy = <<POLICY
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -72,7 +75,6 @@ resource "aws_iam_role" "iam_for_lambda" {
   ]
 }
 POLICY
-  }
 }
 
 resource "aws_lambda_permission" "allow_cloudwatch_events" {
