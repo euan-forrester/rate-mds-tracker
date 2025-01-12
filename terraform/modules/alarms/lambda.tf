@@ -9,7 +9,7 @@ resource "aws_cloudwatch_metric_alarm" "eventbridge_failedinvocations" {
   period                    = "300"
   statistic                 = "Sum"
   threshold                 = "1"
-  treat_missing_data        = "notBreaching"
+  treat_missing_data        = "ignore"
   alarm_description         = "Alerts if EventBridge fails to publish a cron event to lambda"
   alarm_actions             = [aws_sns_topic.alarms.arn]
   insufficient_data_actions = [aws_sns_topic.alarms.arn]
