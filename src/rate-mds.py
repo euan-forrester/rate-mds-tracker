@@ -116,7 +116,6 @@ def get_all_ratings():
   all_ratings, total_pages = get_ratings_batch(session, None)
 
   current_page = 1
-  total_ratings = 0
 
   while True:
     ratings_batch, total_pages = get_ratings_batch(session, current_page)
