@@ -70,6 +70,31 @@ metrics_helper = MetricsHelper(environment=config_helper.get_environment(), regi
 # Helper functions
 #
 
+def get_ratings_batch(session, page):
+  url = BASE_URL
+
+  if page is not None:
+    url += f"&page={page}"
+
+  response = session.get(url)
+
+  if response.status_code != 200:
+    logger.error(f"Received status code {response.status_code} after {REQUEST_RETRIES} attempts from URL '{url}'")
+    sys.exit(-1)
+
+  response_data = json.loads(response.text)
+
+  total_pages = response_data['total_pages']
+
+  ratings_batch = list(map(RateMdsParser.parse_rating, response_data['results']))
+  ratings_batch = list(filter(lambda rating:rating['comment'] is not None, ratings_batch))
+
+  return ratings_batch, total_pages
+
+def deduplicate_ratings(ratings):
+  seen = set()
+  return [item for item in ratings if not(item['id'] in seen or seen.add(item['id']))] # https://stackoverflow.com/questions/16827344/how-do-i-remove-duplicate-arrays-in-a-list-in-python
+
 def get_all_ratings():
   retries = Retry(total=NUM_RETRIES, backoff_factor=RETRY_BACKOFF_FACTOR)
   adapter = HTTPAdapter(max_retries=retries)
@@ -77,26 +102,23 @@ def get_all_ratings():
   session = requests.Session()
   session.mount("https://", adapter)
 
-  current_page = 1 # Requesting page 0 gives the last page, as does requesting every page > the last page
-  total_ratings = 0
+  # This endpoint is a bit crazy. 
 
-  all_ratings = []
+  # First, requesting page 0 gives the last page, as does requesting every page > the last page
+
+  # Also I saw an example where requesting without specifying a page number gave a fresh
+  # result, but then going from page 1 to the final page did not include that result. It did, however, duplicate a
+  # different random result so that the total results appeared to match
+
+  # So, to fully get all results, I think we need to request without specifying a page, then do all the pages
+  # from 1 to total_pages. Then we need to deduplicate the results, and we may as well sort them as well for good measure
+
+  all_ratings, total_pages = get_ratings_batch(session, None)
+
+  current_page = 1
 
   while True:
-    url = BASE_URL + f"&page={current_page}"
-
-    response = session.get(url)
-
-    if response.status_code != 200:
-      logger.error(f"Received status code {response.status_code} after {REQUEST_RETRIES} attempts from URL '{url}'")
-      sys.exit(-1)
-
-    response_data = json.loads(response.text)
-
-    total_pages = response_data['total_pages']
-
-    ratings_batch = list(map(RateMdsParser.parse_rating, response_data['results']))
-    ratings_batch = list(filter(lambda high_five:high_five['comment'] is not None, ratings_batch))
+    ratings_batch, total_pages = get_ratings_batch(session, current_page)
 
     all_ratings += ratings_batch
 
@@ -105,7 +127,9 @@ def get_all_ratings():
 
     current_page += 1
 
-  return all_ratings
+  all_ratings_deduplicated = deduplicate_ratings(all_ratings)
+
+  return sorted(all_ratings_deduplicated, key=lambda x: x['id'], reverse=True)
 
 def email_ratings(ratings):
   body_text = "\n\n".join(map(RateMdsParser.stringify_rating, ratings))
