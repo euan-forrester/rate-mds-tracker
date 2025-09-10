@@ -1,7 +1,7 @@
 # See here for info about how to create an image for AWS Lambda:
 # https://docs.aws.amazon.com/lambda/latest/dg/python-image.html#python-image-create
 
-FROM --platform=linux/amd64 public.ecr.aws/lambda/python:3.9
+FROM --platform=linux/amd64 public.ecr.aws/lambda/python:3.13
 
 # Install the function's dependencies using file requirements.txt
 # from your project folder.
