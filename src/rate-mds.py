@@ -79,7 +79,7 @@ def get_ratings_batch(session, page):
   response = session.get(url)
 
   if response.status_code != 200:
-    logger.error(f"Received status code {response.status_code} after {REQUEST_RETRIES} attempts from URL '{url}'")
+    logger.error(f"Received status code {response.status_code} after {NUM_RETRIES} attempts from URL '{url}'")
     sys.exit(-1)
 
   response_data = json.loads(response.text)
@@ -102,7 +102,7 @@ def get_all_ratings():
   session = requests.Session()
   session.mount("https://", adapter)
 
-  # This endpoint is a bit crazy. 
+  # This endpoint is a bit crazy.
 
   # First, requesting page 0 gives the last page, as does requesting every page > the last page
 

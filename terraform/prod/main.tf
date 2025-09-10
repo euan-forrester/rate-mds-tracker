@@ -4,7 +4,7 @@ module "lambda" {
   environment             = var.environment
   region                  = var.region
   application_name        = var.application_name
-  
+
   num_days_to_keep_images = 30
 
   cron_expression         = "cron(0 16 * * ? *)"  # Run every day at 4:00 PM UTC = 9:00 AM PDT or 8:00 AM PST
@@ -25,8 +25,8 @@ module "lambda" {
   base_url                = "https://www.ratemds.com/doctor-ratings/dr-kathryn-louise-toews-new-westminster-bc-ca/?json=true"
 
   batch_size              = 1000
-  num_retries             = 3
-  retry_backoff_factor    = 0.5
+  num_retries             = 5
+  retry_backoff_factor    = 1 # Backoff time is backoff_factor * 2^retries
 }
 
 module "alarms" {
