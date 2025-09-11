@@ -70,6 +70,11 @@ metrics_helper = MetricsHelper(environment=config_helper.get_environment(), regi
 # Helper functions
 #
 
+def graceful_exit(exit_code):
+  logger.handlers[0].flush()
+  logging.shutdown()
+  sys.exit(exit_code)
+
 def get_ratings_batch(session, page):
   url = BASE_URL
 
@@ -80,7 +85,7 @@ def get_ratings_batch(session, page):
 
   if response.status_code != 200:
     logger.error(f"Received status code {response.status_code} after {NUM_RETRIES} attempts from URL '{url}'")
-    sys.exit(-1)
+    graceful_exit(-1)
 
   response_data = json.loads(response.text)
 
@@ -208,6 +213,8 @@ def get_new_ratings_and_send_email(event, context):
   # Be sure to do this last, so that if we have an error earlier (e.g. sending the email) then we won't miss sending out a rating in a subsequent run
   if SET_MOST_RECENT_RATING_ID and (len(all_ratings) > 0):
     config_helper.set("previous-most-recent-rating-id", str(all_ratings[0]['id']))
+
+  graceful_exit(0)
 
 if RUN_AT_SCRIPT_STARTUP:
   get_new_ratings_and_send_email(None, None)
