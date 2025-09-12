@@ -214,7 +214,5 @@ def get_new_ratings_and_send_email(event, context):
   if SET_MOST_RECENT_RATING_ID and (len(all_ratings) > 0):
     config_helper.set("previous-most-recent-rating-id", str(all_ratings[0]['id']))
 
-  graceful_exit(0)
-
 if RUN_AT_SCRIPT_STARTUP:
   get_new_ratings_and_send_email(None, None)
