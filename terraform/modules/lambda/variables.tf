@@ -40,6 +40,9 @@ variable "from_email" {
 variable "base_url" {
 }
 
+variable "user_agent" {
+}
+
 variable "batch_size" {
 }
 

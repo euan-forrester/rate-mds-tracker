@@ -23,6 +23,7 @@ module "lambda" {
   minimum_average_score   = var.minimum_average_score
 
   base_url                = "https://www.ratemds.com/doctor-ratings/dr-kathryn-louise-toews-new-westminster-bc-ca/?json=true"
+  user_agent              = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:142.0) Gecko/20100101 Firefox/142.0"
 
   batch_size              = 1000
   num_retries             = 5

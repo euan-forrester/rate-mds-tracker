@@ -5,6 +5,13 @@ resource "aws_ssm_parameter" "base_url" {
   value       = var.base_url
 }
 
+resource "aws_ssm_parameter" "user_agent" {
+  name        = "/${var.application_name}/${var.environment}/user-agent"
+  description = "User agent to use when making request"
+  type        = "String"
+  value       = var.user_agent
+}
+
 resource "aws_ssm_parameter" "batch_size" {
   name        = "/${var.application_name}/${var.environment}/batch-size"
   description = "How many ratings to get in a single call"

@@ -40,6 +40,7 @@ config_helper = ConfigHelper.get_config_helper(default_env_name="dev", applicati
 AWS_REGION              = config_helper.get("aws-region")
 
 BASE_URL                = config_helper.get("base-url")
+USER_AGENT              = config_helper.get("user-agent")
 NUM_RETRIES             = config_helper.getInt("num-retries")
 RETRY_BACKOFF_FACTOR    = config_helper.getFloat("retry-backoff-factor")
 
@@ -81,7 +82,11 @@ def get_ratings_batch(session, page):
   if page is not None:
     url += f"&page={page}"
 
-  response = session.get(url)
+  headers = {
+    'User-Agent': USER_AGENT
+  }
+
+  response = session.get(url, headers=headers)
 
   if response.status_code != 200:
     logger.error(f"Received status code {response.status_code} after {NUM_RETRIES} attempts from URL '{url}'")
