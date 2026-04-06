@@ -7,7 +7,7 @@ module "lambda" {
 
   num_days_to_keep_images = 30
 
-  cron_expression         = "cron(43 14 * * ? *)"  # Run every day at 2:43 PM UTC = 7:43 AM PDT or 6:43 AM PST
+  cron_expression         = "cron(37 14 * * ? *)"  # Run every day at 2:37 PM UTC = 7:37 AM PDT or 6:37 AM PST
 
   set_most_recent_rating_id = true
 
@@ -23,7 +23,7 @@ module "lambda" {
   minimum_average_score   = var.minimum_average_score
 
   base_url                = "https://www.ratemds.com/doctor-ratings/dr-kathryn-louise-toews-new-westminster-bc-ca/?json=true"
-  user_agent              = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:142.0) Gecko/20100101 Firefox/142.0"
+  user_agent              = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:149.0) Gecko/20100101 Firefox/149.0"
 
   batch_size              = 1000
   num_retries             = 5
