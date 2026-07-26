@@ -7,7 +7,7 @@ module "lambda" {
 
   num_days_to_keep_images = 30
 
-  cron_expression         = "cron(37 14 * * ? *)"  # Run every day at 2:37 PM UTC = 7:37 AM PDT or 6:37 AM PST
+  cron_expression         = "cron(16 15 * * ? *)"  # Run every day at 3:16 PM UTC = 8:16 AM PDT
 
   set_most_recent_rating_id = true
 
